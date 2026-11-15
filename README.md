@@ -54,7 +54,7 @@ knoppen HOME 2, EXIT 1, draaischakelaar omhoog 6 / omlaag 4 / indrukken 5.
 ## 2. Bouwen en flashen
 
 ```bash
-cd esp21-barograaf-barometer
+cd esp32-barograaf-barometer
 pio run                 # compileren
 pio run -t upload       # flashen via USB-C
 pio device monitor      # seriële console, 115200 baud
@@ -210,7 +210,7 @@ metingen). Elke 10 minuten komt er een punt in de 72-uurshistorie.
 ## 6. Projectstructuur
 
 ```
-esp21-barograaf-barometer/
+esp32-barograaf-barometer/
 ├── platformio.ini            build-configuratie (ESP32-S3, Arduino)
 ├── include/config.h          pinnen en instelbare constanten
 ├── lib/BaroCore/src/         hardware-onafhankelijke kern
