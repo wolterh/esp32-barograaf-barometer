@@ -263,4 +263,8 @@ beschikbaar stellen aan de kopers. Commerciële verkoop is toegestaan.
 
 De overige bibliotheken (Adafruit GFX, BME280, BMP3XX, BusIO, Unified Sensor,
 RTClib, arduino-esp32) hebben eigen, ruimere licenties (BSD, MIT, Apache-2.0,
-LGPL-2.1). Die blijven van kracht voor hun eigen code.
+LGPL-2.1). Die blijven van kracht voor hun eigen code. Het overzicht met alle
+copyright- en licentieteksten staat in
+[`THIRD_PARTY_NOTICES.txt`](THIRD_PARTY_NOTICES.txt). **Lever dat bestand mee
+met elk verkocht apparaat** (bijvoorbeeld in de handleiding of op een
+downloadpagina), samen met een verwijzing naar de broncode.
