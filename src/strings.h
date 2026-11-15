@@ -25,6 +25,8 @@ struct LangText {
   const char *disclaimer;
   const char *testAlarm;
   const char *pressOk;
+  const char *dialWords[5];   // classic barometer: stormy .. very dry
+  const char *dialRefHint;    // explains the reference (set) hand
 };
 
 static const LangText LANG_NL = {
@@ -71,6 +73,8 @@ static const LangText LANG_NL = {
     "Indicatie, geen vervanging van weerbericht.",
     "TEST ALARM",
     "OK = uitvoeren",
+    {"STORM", "REGEN", "VERANDERLIJK", "MOOI", "ZEER DROOG"},
+    "o = 3 uur geleden",
 };
 
 static const LangText LANG_EN = {
@@ -117,6 +121,8 @@ static const LangText LANG_EN = {
     "Indication only, not a forecast.",
     "ALARM TEST",
     "OK = execute",
+    {"STORMY", "RAIN", "CHANGE", "FAIR", "VERY DRY"},
+    "o = 3 hours ago",
 };
 
 inline const LangText &langText(uint8_t lang) { return lang == 1 ? LANG_EN : LANG_NL; }

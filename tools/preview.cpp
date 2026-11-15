@@ -78,7 +78,8 @@ int main(int argc, char **argv) {
   struct { const char *name; int scen; Screen scr; uint8_t lang; } shots[] = {
       {"main_quiet", 0, SCR_MAIN, 0},   {"main_strong", 1, SCR_MAIN, 0},
       {"main_gale_en", 2, SCR_MAIN, 1}, {"long_72h", 1, SCR_LONG, 0},
-      {"trend", 2, SCR_TREND, 0},       {"settings", 0, SCR_SETTINGS, 0},
+      {"trend", 2, SCR_TREND, 0},       {"dial", 1, SCR_DIAL, 0},
+      {"dial_quiet_en", 0, SCR_DIAL, 1},       {"settings", 0, SCR_SETTINGS, 0},
   };
   for (auto &sh : shots) {
     settings.lang = sh.lang;

@@ -10,7 +10,7 @@
 typedef baro::Series<HISTORY_SLOTS> History;
 typedef baro::Series<MINUTE_SLOTS> MinuteSeries;
 
-enum Screen : uint8_t { SCR_MAIN = 0, SCR_LONG, SCR_TREND, SCR_SETTINGS, SCR_COUNT };
+enum Screen : uint8_t { SCR_MAIN = 0, SCR_LONG, SCR_TREND, SCR_DIAL, SCR_SETTINGS, SCR_COUNT };
 
 enum SettingItem : uint8_t {
   SET_SENSITIVITY = 0,

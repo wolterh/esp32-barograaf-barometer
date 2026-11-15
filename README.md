@@ -96,7 +96,13 @@ willekeurige knop het alarm**.
 2. **Barograaf 72 uur**: middernacht is gemarkeerd met een doorgetrokken lijn.
 3. **Tendens**: tabel met de verandering over 1, 3, 6, 12 en 24 uur, de
    druksprong over 15 minuten, de actieve waarschuwingen en een paar vuistregels.
-4. **Instellingen**: gevoeligheid, kalibratie, sensorhoogte, breedtegraad,
+4. **Klassieke barometer**: wijzerplaat van 950 tot 1050 hPa met de bekende
+   woorden STORM, REGEN, VERANDERLIJK, MOOI en ZEER DROOG op de traditionele
+   plaatsen (28,5 tot 30,5 inHg). De zwarte wijzer geeft de huidige druk. De
+   dunne wijzer met het open rondje is de "meewijzer": die staat op de druk
+   van 3 uur geleden. Vroeger zette je die met de hand; hier gaat dat
+   automatisch. Zo zie je in één oogopslag of de druk daalt of stijgt.
+5. **Instellingen**: gevoeligheid, kalibratie, sensorhoogte, breedtegraad,
    tijdzone, zoemer, slaapstand, taal (NL/EN), datum en tijd, alarmtest en
    historie wissen.
 
@@ -216,7 +222,7 @@ barograph/
 │   └── baro_alarm.h          alarmregels, hysterese, bevestigen
 ├── src/
 │   ├── main.cpp              meetcyclus, deep sleep, knoppen, zoemer, serieel
-│   ├── display.cpp/.h        schermen (Adafruit GFX, ook bruikbaar op de pc)
+│   ├── display.cpp/.h        schermen incl. klassieke wijzerplaat (Adafruit GFX)
 │   ├── sensors.cpp/.h        BME280/BMP390 en DS3231
 │   ├── storage.cpp/.h        instellingen (NVS) en historie (LittleFS)
 │   ├── strings.h             teksten NL/EN

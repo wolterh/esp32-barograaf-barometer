@@ -420,6 +420,122 @@ static void screenSettings(Adafruit_GFX &g, const AppState &s) {
   }
 }
 
+// ------------------------------------------------------------ classic dial
+// Aneroid-style barometer: 950..1050 hPa over a 270 degree arc, the weather
+// words at the traditional positions (28.5/29/29.5/30/30.5 inHg) and a
+// reference ("set") hand showing the pressure of 3 hours ago, so the
+// tendency is read like on a brass ship's barometer: needle vs. set hand.
+static const float DIAL_MIN = 950.0f, DIAL_MAX = 1050.0f;
+
+static float dialAngle(float p) {  // radians, math orientation
+  if (p < DIAL_MIN - 2) p = DIAL_MIN - 2;
+  if (p > DIAL_MAX + 2) p = DIAL_MAX + 2;
+  float deg = 225.0f - (p - DIAL_MIN) / (DIAL_MAX - DIAL_MIN) * 270.0f;
+  return deg * 3.14159265f / 180.0f;
+}
+
+static void polar(int cx, int cy, float r, float a, int &x, int &y) {
+  x = cx + (int)lroundf(r * cosf(a));
+  y = cy - (int)lroundf(r * sinf(a));
+}
+
+static void screenDial(Adafruit_GFX &g, const AppState &s) {
+  const LangText &L = langText(s.settings->lang);
+  const int cx = 200, cy = 152, R = 146;
+  char buf[48];
+
+  // bezel
+  g.drawCircle(cx, cy, R, BLACK);
+  g.drawCircle(cx, cy, R - 1, BLACK);
+  g.drawCircle(cx, cy, R - 4, BLACK);
+
+  // scale: minor tick every hPa, medium every 5, major + number every 10
+  for (int p = (int)DIAL_MIN; p <= (int)DIAL_MAX; p++) {
+    float a = dialAngle((float)p);
+    int len = (p % 10 == 0) ? 14 : (p % 5 == 0 ? 9 : 5);
+    int x0, y0, x1, y1;
+    polar(cx, cy, R - 6, a, x0, y0);
+    polar(cx, cy, R - 6 - len, a, x1, y1);
+    g.drawLine(x0, y0, x1, y1, BLACK);
+    if (p % 10 == 0) {
+      int x2, y2;
+      polar(cx, cy, R - 6 - len + 1, a + 0.006f, x2, y2);  // thicken
+      g.drawLine(x0, y0, x2, y2, BLACK);
+      polar(cx, cy, R - 36, a, x2, y2);
+      snprintf(buf, sizeof buf, "%d", p);
+      text(g, x2, y2 + 5, buf, &FreeSans9pt7b, CENTER);
+    }
+  }
+  // inner scale ring
+  for (int i = 0; i <= 270; i += 2) {
+    float a = (225.0f - i) * 3.14159265f / 180.0f;
+    int x, y;
+    polar(cx, cy, R - 21, a, x, y);
+    g.drawPixel(x, y, BLACK);
+  }
+
+  // weather words at the classic positions
+  // (965, 982, 999, 1016, 1033 hPa); placed by hand so that the horizontal
+  // text stays clear of the numbers and the hub.
+  static const int WORD_DX[5] = {-70, -66, 0, 66, 68};
+  static const int WORD_DY[5] = {15, -36, -66, -36, 15};
+  for (int i = 0; i < 5; i++)
+    text(g, cx + WORD_DX[i], cy + WORD_DY[i], L.dialWords[i], &FreeSans9pt7b, CENTER);
+
+  // reference (set) hand: pressure 3 h ago, thin with an open ring
+  if (s.havePressure && s.metrics.valid[M_3H]) {
+    float a = dialAngle(s.pressure - s.metrics.value[M_3H]);
+    int x, y, xr, yr;
+    polar(cx, cy, R - 25, a, x, y);
+    polar(cx, cy, R - 29, a, xr, yr);
+    g.drawLine(cx, cy, xr, yr, BLACK);
+    g.fillCircle(x, y, 4, WHITE);
+    g.drawCircle(x, y, 4, BLACK);
+    g.drawCircle(x, y, 3, BLACK);
+  }
+
+  // main needle: tapered, with a counterweight tail
+  if (s.havePressure) {
+    float a = dialAngle(s.pressure);
+    float pa = a + 3.14159265f / 2;  // perpendicular
+    int tx, ty, b1x, b1y, b2x, b2y, ex, ey;
+    polar(cx, cy, R - 10, a, tx, ty);
+    polar(cx, cy, 6, pa, b1x, b1y);
+    polar(cx, cy, -6, pa, b2x, b2y);
+    g.fillTriangle(tx, ty, b1x, b1y, b2x, b2y, BLACK);
+    polar(cx, cy, -24, a, ex, ey);
+    g.fillTriangle(ex, ey, b1x, b1y, b2x, b2y, BLACK);
+    g.fillCircle(ex, ey, 5, BLACK);
+  }
+  g.fillCircle(cx, cy, 9, BLACK);
+  g.fillCircle(cx, cy, 3, WHITE);
+
+  // digital readout in the gap at the bottom of the dial
+  if (s.havePressure) snprintf(buf, sizeof buf, "%.1f hPa", s.pressure);
+  else snprintf(buf, sizeof buf, "---- hPa");
+  text(g, cx, cy + 100, buf, &FreeSansBold12pt7b, CENTER);
+  if (s.metrics.valid[M_3H]) {
+    snprintf(buf, sizeof buf, "3%s %+.1f", L.hoursSuffix, s.metrics.value[M_3H]);
+    text(g, cx, cy + 120, buf, &FreeSans9pt7b, CENTER);
+  }
+
+  // corners: time, alarm state, legend
+  LocalTime lt = toLocal(s.nowUtc, s.settings->tzHours);
+  if (s.timeValid) snprintf(buf, sizeof buf, "%02d:%02d", lt.hour, lt.minute);
+  else snprintf(buf, sizeof buf, "%s", L.timeUnknown);
+  text(g, W - 3, 20, buf, &FreeSansBold12pt7b, RIGHT);
+  if (s.metrics.valid[M_3H]) text(g, W - 3, H - 4, L.dialRefHint, &FreeSans9pt7b, RIGHT);
+  uint8_t lvl = s.alarm->level;
+  if (s.testAlarm || lvl > LVL_NONE) {
+    const char *t = s.testAlarm ? L.testAlarm : L.windHint[lvl];
+    g.setFont(&FreeSansBold9pt7b);
+    int w = textWidth(g, t);
+    g.fillRect(0, H - 22, w + 10, 22, BLACK);
+    text(g, 5, H - 6, t, &FreeSansBold9pt7b, LEFT, WHITE);
+  }
+  if (!s.sensorOk) text(g, 3, 20, L.noSensor, &FreeSansBold9pt7b);
+}
+
 void renderScreen(Adafruit_GFX &g, const AppState &s) {
   g.fillScreen(WHITE);
   switch (s.screen) {
@@ -432,6 +548,7 @@ void renderScreen(Adafruit_GFX &g, const AppState &s) {
       break;
     }
     case SCR_TREND: screenTrend(g, s); break;
+    case SCR_DIAL: screenDial(g, s); break;
     case SCR_SETTINGS: screenSettings(g, s); break;
     default: screenMain(g, s, 24); break;
   }
