@@ -240,3 +240,27 @@ esp32-barograaf-barometer/
   luiken). Daarom wordt er gemiddeld en met regressie gerekend; extreme pieken
   kunnen toch een druksprong-alarm geven.
 - Na een stroomonderbreking gaat hooguit het laatste uur aan historie verloren.
+
+## 8. Licentie
+
+Copyright (C) 2026 wolterh
+
+Dit programma is vrije software: je mag het verspreiden en/of wijzigen onder de
+voorwaarden van de **GNU General Public License versie 3** (of, naar keuze, een
+latere versie), zoals gepubliceerd door de Free Software Foundation. Zie
+[`LICENSE`](LICENSE) voor de volledige tekst.
+
+Dit programma wordt verspreid in de hoop dat het nuttig is, maar ZONDER ENIGE
+GARANTIE, zelfs zonder de impliciete garantie van VERKOOPBAARHEID of
+GESCHIKTHEID VOOR EEN BEPAALD DOEL. Juist omdat het om een weeralarm gaat:
+gebruik het als hulpmiddel, nooit als enige bron voor beslissingen over
+veiligheid aan boord.
+
+**Waarom GPL-3.0?** De firmware gebruikt de e-paperdriver
+[GxEPD2](https://github.com/ZinggJM/GxEPD2), die onder GPL-3.0 valt. Wie
+apparaten met deze firmware verkoopt, moet de broncode onder dezelfde licentie
+beschikbaar stellen aan de kopers. Commerciële verkoop is toegestaan.
+
+De overige bibliotheken (Adafruit GFX, BME280, BMP3XX, BusIO, Unified Sensor,
+RTClib, arduino-esp32) hebben eigen, ruimere licenties (BSD, MIT, Apache-2.0,
+LGPL-2.1). Die blijven van kracht voor hun eigen code.
