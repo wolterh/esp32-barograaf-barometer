@@ -1,0 +1,6 @@
+.pio/
+.vscode/
+test/test_core
+tools/preview_bin
+tools/*.png
+tools/*.pbm
