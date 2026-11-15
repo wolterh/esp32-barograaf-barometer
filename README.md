@@ -6,9 +6,6 @@ geeft een alarm (zoemer en LED) bij drukveranderingen die op harde wind wijzen.
 Een DS3231-klok met eigen batterij zorgt dat tijd en historie kloppen, ook na
 een stroomonderbreking.
 
-> Dit project staat los van de AIS-radar (`main.lua` e.a.) in deze repository
-> en verandert daar niets aan.
-
 ![schermvoorbeelden](docs/screens.png)
 
 ---
@@ -57,7 +54,7 @@ knoppen HOME 2, EXIT 1, draaischakelaar omhoog 6 / omlaag 4 / indrukken 5.
 ## 2. Bouwen en flashen
 
 ```bash
-cd barograph
+cd esp21-barograaf-barometer
 pio run                 # compileren
 pio run -t upload       # flashen via USB-C
 pio device monitor      # seriële console, 115200 baud
@@ -72,7 +69,7 @@ make -C test            # unit-tests van de trend- en alarmlogica (op de pc)
 
 **Schermvoorbeeld op de pc** (gebruikt dezelfde tekencode als de firmware):
 ```bash
-git clone https://github.com/adafruit/Adafruit-GFX-Library ../../Adafruit-GFX-Library
+git clone https://github.com/adafruit/Adafruit-GFX-Library ../Adafruit-GFX-Library
 make -C tools run       # maakt PNG's van alle schermen in tools/
 ```
 
@@ -213,7 +210,7 @@ metingen). Elke 10 minuten komt er een punt in de 72-uurshistorie.
 ## 6. Projectstructuur
 
 ```
-barograph/
+esp21-barograaf-barometer/
 ├── platformio.ini            build-configuratie (ESP32-S3, Arduino)
 ├── include/config.h          pinnen en instelbare constanten
 ├── lib/BaroCore/src/         hardware-onafhankelijke kern
